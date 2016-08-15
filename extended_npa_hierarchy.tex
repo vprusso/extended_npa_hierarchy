@@ -51,6 +51,7 @@
 \def\R{\mathcal{R}}
 \def\S{\mathcal{S}}
 \def\complex{\mathbb{C}}
+\def\real{\mathbb{R}}
 
 \def\Q{\mathcal{Q}}
 \def\L{\mathcal{L}}
@@ -171,9 +172,25 @@
 		\item \emph{Quantum strategies:} Alice and Bob share a joint quantum system $\rho \in \Density(\A \otimes \B)$ and allow their answers to be outcomes of measurements on this shared system.		
 		\vspace{5mm}
 		\item \emph{Commuting measurement strategies:} Alice and Bob share a quantum system over a single Hilbert space $\rho \in \Density(\H)$ and allow their answers to be outcomes of measurements on this system. 
-		\vspace{5mm}
-		\item \emph{Non-signaling strategies:} No instantaneous communication between parties.  
+%		\vspace{5mm}
+%		\item \emph{Non-signaling strategies:} No instantaneous communication between parties.  
 	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Winning probabilities for Alice and Bob}
+	For any type of strategy, the output probability distribution produced by Alice and Bob may be described by a \emph{correlation operator}:
+	\begin{align*}
+		C \in \Lin(\real^{\SigmaA \times \GammaA}, \real^{\SigmaB \times \GammaB}),
+	\end{align*}
+where $C((x,a),(y,b))$ is the probability that Alice and Bob output $(a,b)$ given questions $(x,y)$. 
+\pause
+\vspace{5mm}
+
+For a nonlocal game, the probability that Alice and Bob win for a given choice of $x,y,a,b$ is 
+\begin{align*}
+	\sum_{x,y} \pi(x,y) \sum_{a,b} V(a,b|x,y) C((x,a), (y,b)).
+\end{align*}
 \end{frame}
 
 \begin{frame}
@@ -185,15 +202,47 @@ For a nonlocal game, $G$, we denote the classical and quantum values as
 	\begin{itemize}
 		\item Classical value: $\omega(G)$,
 		\item Commuting measurement value: $\omega_c(G)$,
-		\item Quantum value: $\omega^*(G)$,
-		\item Non-signaling value: $\omega_{\ns}(G)$.
+		\item Quantum value: $\omega^*(G)$.
 	\end{itemize}	
 	\vspace{2mm}
 	
 	The values obey the following relationship for any nonlocal game:
 	\begin{align*}
-		\omega(G) \leq \omega^*(G) \leq \omega_c(G) \leq \omega_{\ns}(G).
+		\omega(G) \leq \omega^*(G) \leq \omega_c(G).
 	\end{align*}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Quantum strategies for nonlocal games}
+	A \emph{quantum strategy} consists of finite-dimensional complex Euclidean spaces $\A$ and $\B$ as well as the following:
+	\begin{itemize}
+		\item Shared state: $\rho \in \A \otimes \B$.
+		\item Measurements $\{A^x_a\} \subset \Pos(\A)$ and $\{B_b^y\} \subset \Pos(\B)$.
+	\end{itemize}
+	\pause 
+	\vspace{5mm}
+	Winning probability for a quantum strategy is given by:
+	\begin{align*}
+		\sum_{x,y} \pi(x,y) \sum_{a,b} V(a,b|x,y) \bigip{A_a^x \otimes B_b^y}{\rho}.
+	\end{align*}
+	The \emph{quantum value}, denoted as as $\omega^*(G)$, is the supremum of the winning probability over all quantum strategies. 
+\end{frame}
+
+\begin{frame}
+	\frametitle{Commuting measurement strategies for nonlocal games}
+	A \emph{commuting measurement strategy} consists of a single (possibly infinite-dimensional) complex Euclidean space $\H$, as well as the following:
+	\begin{itemize}
+		\item Shared state: $\rho \in \H$.
+		\item Measurements $\{A^x_a\} \subset \Pos(\H)$ and $\{B_b^y\} \subset \Pos(\H)$,
+	\end{itemize}
+	such that $\left[A_a^x, B_b^y\right] = 0$ for all $x,y,a,b$. 
+	\vspace{5mm}
+	
+	Winning probability for a commuting measurement strategy is given by:
+	\begin{align*}
+		\sum_{x,y} \pi(x,y) \sum_{a,b} V(a,b|x,y) \bigip{A_a^x B_b^y}{\rho}.
+	\end{align*}
+	The \emph{commuting measurement value}, denoted as as $\omega_c(G)$, is the supremum of the winning probability over all commuting measurement strategies. 
 \end{frame}
 
 \begin{frame}
@@ -202,7 +251,7 @@ For a nonlocal game, $G$, we denote the classical and quantum values as
 		{Want: Method to calculate the quantum value of a nonlocal game.}
 	\end{center}	
 	\vspace{2mm}
-	This figure shows representations of the space of joint distributions for fixed and finite number of possible questions and answers.
+	This figure shows representations of the space of correlations for fixed and finite number of possible questions and answers.
 	\begin{figure}[!htpb] \label{fig:extended-nonlocal-game}
 	\begin{center}
 		\includegraphics[scale=0.65]{figures/chsh_polytope.pdf}
