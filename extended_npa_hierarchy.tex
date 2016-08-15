@@ -64,6 +64,9 @@
 \def \GammaB{\Gamma_{\reg{B}}}
 \def \SigmaA{\Sigma_{\reg{A}}}
 \def \SigmaB{\Sigma_{\reg{B}}}
+\def \DeltaA{\Sigma_{\reg{A}}}
+\def \DeltaB{\Sigma_{\reg{B}}}
+
 
 \def\ns{\textnormal{ns}}
 
@@ -246,7 +249,7 @@ For a nonlocal game, $G$, we denote the classical and quantum values as
 \end{frame}
 
 \begin{frame}
-	\frametitle{Optimizing over quantum strategies is hard}
+	\frametitle{Calculating the quantum value is hard}
 	\begin{center}
 		{Want: Method to calculate the quantum value of a nonlocal game.}
 	\end{center}	
@@ -311,19 +314,74 @@ For a nonlocal game, $G$, we denote the classical and quantum values as
 	\begin{align*}
 		\sum_{x,y,a,b} \pi(x,y) V(a,b|x,y) \textcolor{blue}{C^{(\ell)}((x,a),(y,b))}
 	\end{align*}
-	for some finite level, $\ell$, such that \textcolor{blue}{$C^{(\ell)}$} satisfies certain linear constraints. 
+	for some finite level, $\ell$, such that \textcolor{blue}{$C^{(\ell)}$} satisfies certain linear constraints satisfied by a commuting measurement strategy. 
 	\vspace{5mm}
 	
 	\begin{itemize}
-		\item These linear constraints can be checked via SDP! 
+		\item These linear constraints can be checked via a semidefinite program! 
+		\item We refer to \textcolor{blue}{$C^{(\ell)}$} as an \emph{$\ell$-th order pseudo commuting measurement assemblage}.
 		\item The next few slides will describe how \textcolor{blue}{$C^{(\ell)}$} is defined.
 	\end{itemize}
 	
 \end{frame}
 
+%\begin{frame}
+%	\frametitle{Intuition about pseudo commuting measurement assemblage}
+%	\comment{More on intuition behind the $C^{(\ell)}$ operator.}
+%\end{frame}
+
 \begin{frame}
-	\frametitle{PSD operator}
-	\comment{More on intuition behind the $C^{(\ell)}$ operator.}
+	\frametitle{Example}
+	Consider a nonlocal game where $\abs{\SigmaA} = \abs{\SigmaB} = \abs{\GammaA} = \abs{\GammaB} = 2$. Let's compute $C^{(1)}$:
+	\[
+\begin{aligned}
+C^{(1)} =
+\left(
+\begin{array}{c||cccc|ccc}
+ & \I & A_0^0 & \cdots & A_1^1 & B_0^0 & \cdots & B_1^1 \\
+\hline\hline 
+\I & & & & & & & \\
+A_0^0 & & & & & & &  \\
+\vdots & & & & & & & \\
+A_1^1 & & & & & & & \\
+\hline 
+B_0^0 & & & & & & & \\
+\vdots & & & & & & & \\
+B_1^1 & & & & & & & 
+\end{array}
+\right) 
+\end{aligned}
+\]
+
+\begin{itemize}
+	\item Fill in matrix with products of row and column to generate entries. 
+	\item For each entry, $Z$, computed in this way, the entry refers to an inner product between $Z$ and the shared state $\rho$, i.e. $\ip{Z}{\rho}$. 
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Example}
+	Consider a nonlocal game where $\abs{\SigmaA} = \abs{\SigmaB} = \abs{\GammaA} = \abs{\GammaB} = 2$. Let's compute $C^{(1)}$:
+	\[
+\begin{aligned}
+C^{(1)} =
+\left(
+\begin{array}{c||cccc|ccc}
+ & \I & A_0^0 & \cdots & A_1^1 & B_0^0 & \cdots & B_1^1 \\
+\hline\hline 
+\I & \I & A_0^0 & \cdots & A_1^1 & B_0^0 & \cdots & B_1^1 \\
+A_0^0 & A_0^0 & A_0^0 & \cdots & A_0^0 A_1^1 & A_0^0 B_0^0 & \cdots & A_0^0 B_1^1 \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots  & \ddots & \vdots \\
+A_1^1 & A_1^1 & A_1^1 A_0^0 & \cdots & A_1^1 & A_1^0 B_0^0 & \cdots & A_1^1 B_1^1 \\
+\hline 
+B_0^0 & B_0^0 & B_0^0 A_0^0 & \cdots & B_0^0 A_1^1 & B_0^0 & \cdots & B_0^0 B_1^1 \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots  & \ddots & \vdots \\
+B_1^1 & B_1^1 & B_1^1 A_0^0 & \cdots & B_1^1 A_1^1 & B_1^1 B_0^0 & \cdots & B_1^1
+\end{array}
+\right) 
+\end{aligned}
+\]
 \end{frame}
 
 \begin{frame}
@@ -333,7 +391,7 @@ For a nonlocal game, $G$, we denote the classical and quantum values as
 		
 	Define alphabets 
 	\begin{align*}
-		\SigmaA = X \times A, \quad \SigmaB = Y \times B, \quad \Sigma^* = \{\epsilon\} \cup \SigmaA \cup \SigmaB. 
+		\DeltaA = \SigmaA \times \GammaA, \quad \DeltaB = \SigmaB \times \GammaB, \quad \Sigma^* = \{\epsilon\} \cup \DeltaA \cup \DeltaB. 
 	\end{align*}
 
 For example, we can refer to operators (or products of operators) as tuples of concatenated strings. For example:
@@ -355,7 +413,7 @@ The measurements in a commuting measurement strategy are \emph{projective} and t
 	For all strings $s,t \in \Sigma^*$, 
 	\begin{enumerate}
 		\item Projective: $s \sigma t \sim s \sigma \sigma t$ for all $\sigma \in \Sigma$
-		\item Commute: $s \sigma \tau t \sim s \tau \sigma t$ for all $\sigma \in \SigmaA$ and $\tau \in \SigmaB$. 
+		\item Commute: $s \sigma \tau t \sim s \tau \sigma t$ for all $\sigma \in \DeltaA$ and $\tau \in \DeltaB$. 
 	\end{enumerate}
 \end{frame}
 
@@ -411,61 +469,6 @@ The measurements in a commuting measurement strategy are \emph{projective} and t
 		K(a,b|x,y) = C^{(\ell)}((x,a),(y,b)) \quad \forall x,y,a,b. 
 	\end{align*}
 \end{frame}
-
-\begin{frame}
-	\frametitle{Example}
-	Consider a nonlocal game where $\abs{X} = \abs{Y} = \abs{A} = \abs{B} = 2$. Let's compute $C^{(1)}$:
-	\[
-\begin{aligned}
-C^{(1)} =
-\left(
-\begin{array}{c||cccc|ccc}
- & \I & A_0^0 & \cdots & A_1^1 & B_0^0 & \cdots & B_1^1 \\
-\hline\hline 
-\I & & & & & & & \\
-A_0^0 & & & & & & &  \\
-\vdots & & & & & & & \\
-A_1^1 & & & & & & & \\
-\hline 
-B_0^0 & & & & & & & \\
-\vdots & & & & & & & \\
-B_1^1 & & & & & & & 
-\end{array}
-\right) 
-\end{aligned}
-\]
-
-\begin{itemize}
-	\item Fill in matrix with products of row and column to generate element $Z$. 
-	\item For each $Z$ computed in this way, the entry refers to an inner product between $Z$ and the shared state $\rho$, i.e. $\ip{Z}{\rho}$. 
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}
-	\frametitle{Example}
-	Consider a nonlocal game where $\abs{X} = \abs{Y} = \abs{A} = \abs{B} = 2$. Let's compute $C^{(1)}$:
-	\[
-\begin{aligned}
-C^{(1)} =
-\left(
-\begin{array}{c||cccc|ccc}
- & \I & A_0^0 & \cdots & A_1^1 & B_0^0 & \cdots & B_1^1 \\
-\hline\hline 
-\I & \I & A_0^0 & \cdots & A_1^1 & B_0^0 & \cdots & B_1^1 \\
-A_0^0 & A_0^0 & A_0^0 & \cdots & A_0^0 A_1^1 & A_0^0 B_0^0 & \cdots & A_0^0 B_1^1 \\
-\vdots & \vdots & \vdots & \ddots & \vdots & \vdots  & \ddots & \vdots \\
-A_1^1 & A_1^1 & A_1^1 A_0^0 & \cdots & A_1^1 & A_1^0 B_0^0 & \cdots & A_1^1 B_1^1 \\
-\hline 
-B_0^0 & B_0^0 & B_0^0 A_0^0 & \cdots & B_0^0 A_1^1 & B_0^0 & \cdots & B_0^0 B_1^1 \\
-\vdots & \vdots & \vdots & \ddots & \vdots & \vdots  & \ddots & \vdots \\
-B_1^1 & B_1^1 & B_1^1 A_0^0 & \cdots & B_1^1 A_1^1 & B_1^1 B_0^0 & \cdots & B_1^1
-\end{array}
-\right) 
-\end{aligned}
-\]
-\end{frame}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \section{Extended nonlocal games}
